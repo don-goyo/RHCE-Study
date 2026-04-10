@@ -1,0 +1,52 @@
+---
+- name: Install and setup http repo for managed hosts
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Install httpd
+      dnf:
+        name: httpd
+        state: present
+
+    - name: Enable and start httpd
+      systemd_service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Open httpd service in firewall
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: Create temp directory /repo to mount sr0 on
+      file:
+        path: /repo
+        state: directory
+        mode: '0664'
+
+    - name: Mount sr0 on temp directory /repo
+      mount:
+        path: /repo
+        src: /dev/sr0
+        state: ephemeral
+        fstype: iso9660
+
+##    - name: Confirm sufficient storage to setup local repo- use assert-that 
+
+    - name: Copy /repo to /var/www/html/index
+      command: cp -r /repo /var/www/html/index
+
+    - name: Modify permissions to /var/www/html/index/repo
+      file:
+        path: /var/www/html/index/repo
+        owner: ansible
+        group: ansible
+        mode: '0755'
+    
+    - name: Test repo url on localhost
+      uri: 
+        url: http://control.example.local/index/repo
+        status_code: 200
