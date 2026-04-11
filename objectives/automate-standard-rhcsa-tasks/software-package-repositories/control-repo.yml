@@ -34,7 +34,12 @@
         state: ephemeral
         fstype: iso9660
 
-##    - name: Confirm sufficient storage to setup local repo- use assert-that 
+    - name: Confirm enough storage to setup local repo
+      assert:
+        that:
+          - "(ansible_facts['mounts'] | selectattr('mount','equalto','/') | first).size_available > 10700000000"
+        fail_msg: "Not enough space for repo"
+        success_msg: "You have enough space for repo"
 
     - name: Copy /repo to /var/www/html/index
       command: cp -r /repo /var/www/html/index
