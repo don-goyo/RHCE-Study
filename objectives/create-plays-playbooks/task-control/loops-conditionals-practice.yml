@@ -1,0 +1,69 @@
+---
+- name: Install packages with loop, and condition test with when 
+  hosts: ansible2
+  vars_files: vars/packages
+  tasks:
+    - name: Install packages
+      dnf:
+        name: "{{ item.name }}"
+        state: "{{ item.state }}"
+      loop: "{{ packages }}"
+      when: 
+        - ansible_facts['distribution'] in ['CentOS','RedHat']
+        - ansible_facts['distribution_version'] is version( '8.0','>=' )
+      register: when_result
+
+    - name: When result error message
+      debug: 
+        msg: "Host ansible2 does not meet minimal requirements"
+      when: when_result is skipped
+
+    - name: Update firewall http service
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: Start and enable httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+- name: Create index file on control host, copy file to ansible2, and register result of copy
+  hosts: localhost
+  tasks:
+    - name: Create file on local host
+      file: 
+        path: /tmp/index.html
+        owner: root
+        group: root
+        mode: '0644'
+        state: touch
+
+    - name: Edit index.html with message
+      lineinfile:
+        path: /tmp/index.html
+        line: welcome to my webserver
+
+- name: Copy index.html to ansible2 with conditional restart or error message
+  hosts: ansible2
+  tasks:
+    - name: Copy index.html to ansible2
+      copy:
+        src: /tmp/index.html
+        dest: /var/www/html
+      register: copy_result
+
+    - name: Copy index.html success, restart http service
+      service:
+        name: httpd
+        state: restarted
+      when: copy_result.changed == true
+
+    - name: Print error message when copy index.html fails
+      debug:
+        msg: "Error, index.html did not copy"
+      when: copy_result.failed == true
+ 
