@@ -1,0 +1,65 @@
+---
+- name: Install, start, enable vsftpd service and open firewall port
+  hosts: all
+  tasks: 
+    - name: Install vsftpd
+      dnf: 
+        name: vsftpd
+        state: present
+
+    - name: Start and enable vsftpd service
+      service:
+        name: vsftpd
+        state: started
+        enabled: true
+
+    - name: Open firewall port
+      firewalld:
+        port: 21/tcp
+        permanent: true
+        state: enabled
+        immediate: true
+
+    - name: Fetch /etc/vsftpd/vsftpd.conf file to control node for j2 template build
+      fetch:
+        src: /etc/vsftpd/vsftpd.conf
+        dest: /home/ansible/book_exercises/ch8
+
+- name: Deploy j2 template, set permissions, boolean, selinux context and restorecon
+  hosts: all
+  vars:
+    anonymous_enable: yes
+    local_enable: yes
+    write_enable: yes
+    anon_upload_enable: yes
+  tasks:
+    - name: Deploy j2 template to managed hosts
+      template:
+        src: vsftpd.j2
+        dest: /etc/vsftpd/vsftpd.conf
+
+    - name: Set permissions on the /var/ftp/pub directory to 0777
+      file:
+        path: /var/ftp/pub
+        mode: '0777'
+
+    - name: Configure boolean to allow anonymouse user writes
+      seboolean:
+        name: ftpd_anon_write
+        state: true
+        persistent: true
+
+    - name: Set selinux context type to the /var/ftp/pub directory
+      sefcontext:
+        target: '/var/ftp/pub(/.*)?'
+        setype: public_content_rw_t
+        state: present
+        
+    - name: Restore selinux context
+      command: restorecon -v /var/ftp/pub
+
+
+
+
+        
+        
