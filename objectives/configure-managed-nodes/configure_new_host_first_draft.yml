@@ -1,0 +1,77 @@
+---
+- name: Add new managed node information to control node
+  hosts: localhost
+  tasks:
+    - name: Add host to inventory
+      fail:
+        msg: "add the options -e newhost=hostname -e newhostip=ip.address and try again"
+      when: (newhost is undefined) or (newhostip is undefined)
+    - name: Add new {{ newhost }} information to inventory
+      lineinfile:
+        path: inventory
+        line: "{{ newhost }}"
+        state: present
+    - name: Add new {{ newhost }} information to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ newhostip }} {{ newhost }}"
+        state: present
+  tags: addhost
+
+- name: Configure new RHEL host
+  hosts: "{{ newhost }}"
+  remote_user: root
+  become: false
+  vars_files:
+  - vault/vault.yml
+  tasks:
+    - name: Configure user ansible
+      user: 
+        name: ansible
+        password: "{{ vault_ansible | password_hash('sha512') }}"
+        groups: wheel
+        append: yes
+        state: present
+        update_password: on_create
+    - name: Enable sudo without password
+      lineinfile:
+        path: /etc/sudoers.d/ansible
+        line: 'ansible ALL=(ALL) NOPASSWD: ALL'
+        validate: /usr/sbin/visudo -cf %s
+        create: true
+    - name: Create ssh directory in user ansible home
+      file:
+        path: /home/ansible/.ssh
+        state: directory
+        owner: ansible
+        group: ansible
+    - name: Copy ssh public key to remote host
+      copy:
+        src: /home/ansible/.ssh/id_rsa.pub
+        dest: /home/ansible/.ssh/authorized_keys
+  tags: setuphost
+
+- name: Use subscription manager to register and set up repos
+  hosts: "{{ newhost }}"
+  vars_files:
+  - vault/vault.yml
+  tasks: 
+    - name: Register and subscribe
+      redhat_subscription:
+        username: "{{ vault_redhat_username }}"
+        password: "{{ vault_redhat_password }}"
+        state: present
+        auto_attach: true
+      register: sub_result
+    - name: Refresh subscription data
+      command: 
+        cmd: subscription-manager refresh
+      changed_when: true
+    - name: Configure additional repo access
+      rhsm_repository:
+        name: 
+        - rhel-9-for-aarch64-appstream-rpms
+        - rhel-9-for-aarch64-baseos-rpms 
+        state: enabled
+  tags: registerhost
+
