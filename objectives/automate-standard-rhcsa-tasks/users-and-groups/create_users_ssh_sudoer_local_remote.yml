@@ -1,0 +1,72 @@
+---
+- name: Create users, groups, and set encrypted passwords on localhost
+  hosts: localhost
+  vars_files:
+  - lab13-1_vars.yml
+  - vault/vault.yml
+  tasks:
+    - name: Create groups
+      group:
+        name: "{{ item.group }}"
+        state: present
+      loop: "{{ users }}"
+    - name: Create users and generate ssh keys
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.group }}"
+        append: true
+        generate_ssh_key: true
+        ssh_key_comment: "{{ item.username }}@{{ ansible_fqdn }}"
+      loop: "{{ users }}"
+    - name: Create passwords
+      shell: 'echo {{ vault_password }} | passwd --stdin {{ item.username }}'
+      loop: "{{ users }}"
+      no_log: true
+    - name: Create temp directory for users keys
+      file:
+        path: "{{ item.username }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ users }}"
+    - name: Copy from users' hidden home directories to temp directory
+      shell: 'cat /home/{{ item.username }}/.ssh/id_rsa.pub > /home/ansible/book_exercises/ch13/{{ item.username }}/id_rsa.pub'
+      loop: "{{ users }}"
+    - name: Verify keys exist
+      command: ls -l {{ item.username }}/
+      loop: "{{ users }}"
+  tags: setuplocal
+
+- name: Create users and groups on remote hosts, setup ssh access and ensure profs group has ssh access
+  hosts: all
+  vars_files:
+  - lab13-1_vars.yml
+  - vault/vault.yml
+  tasks:
+    - name: Create groups
+      group:
+        name: "{{ item.group }}"
+        state: present
+      loop: "{{ users }}"
+    - name: Create users and append to groups
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.group }}"
+        append: true
+      loop: "{{ users }}"
+    - name: Create passwords
+      shell: 'echo {{ vault_password }} | passwd --stdin {{ item.username }}'
+      loop: "{{ users }}"
+    - name: Copy keys to remote hosts
+      authorized_key:
+        user: "{{ item.username }}"
+        key: "{{ lookup('file', './'+ item.username +'/id_rsa.pub') }}"
+      loop: "{{ users }}"
+    - name: Sudo access for profs group
+      copy:
+        content: '%profs ALL=(ALL:ALL) NOPASSWD:ALL'
+        dest: /etc/sudoers.d/{{ item.username }}
+      loop: "{{ users }}"
+  tags: setupremote
+
+
+      
