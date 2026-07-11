@@ -1,0 +1,9 @@
+HOSTNAME= {{ ansible_hostname }}
+MEMORY= {{ ansible_memory_mb['real'] }}
+
+{% if ansible_devices['nvme0n2'] is defined %}
+SECOND_DISK=present
+{% else %}
+SECOND_DISK=absent
+{% endif %}
+PRIMARY_DISK_SIZE={{ ansible_devices | dict2items | selectattr('key','match','^nvme0')| map(attribute='value.size') | list }}

@@ -1,0 +1,9 @@
+[dev]
+ansible1
+
+[prod]
+ansible2
+
+[servers:children]
+dev
+prod

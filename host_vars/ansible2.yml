@@ -1,0 +1,7 @@
+usergroups:
+- groupname: students
+users:
+- username: lupe
+  groups: students
+- username: carlos
+  groups: students

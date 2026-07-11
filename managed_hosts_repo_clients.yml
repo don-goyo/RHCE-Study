@@ -1,0 +1,28 @@
+---
+- name: Setup managed hosts as repo clients of control node
+  hosts: all
+  tasks:
+    - name: Update /etc/hosts so hosts can find repo
+      lineinfile:
+        path: /etc/hosts
+        line: 192.168.33.156 control.example.local control
+        state: present
+    - name: Add repo BaseOS
+      yum_repository:
+        name: control_repo_BaseOS
+        description: control node repo
+        baseurl: http://control.example.local/repo/BaseOS
+        repo_gpgcheck: no
+        priority: 1
+    - name: Add repo AppStream
+      yum_repository:
+        name: control_repo_AppStream
+        description: control node repo
+        baseurl: http://control.example.local/repo/AppStream
+        repo_gpgcheck: no
+        priority: 1
+    - name: Test repo
+      uri:
+        url: http://control.example.local/repo
+
+

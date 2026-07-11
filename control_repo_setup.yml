@@ -1,0 +1,85 @@
+---
+- name: Setup of respository on control node
+  hosts: localhost
+  connection: local
+  remote_user: root
+  become: true 
+  vars_prompt:
+    - name: ansible_become_password
+      prompt: "Enter sudo password"
+      private: true
+  tasks:
+    - name: Ensure httpd and policycoreutil is installed
+      dnf:
+        name:
+          - httpd
+          - policycoreutils-python-utils
+        state: present
+      tags:
+        - moverepodata
+    - name: Create temp directory to mount /dev/sr0
+      file:
+        path: /home/ansible/temp
+        state: directory
+        mode: '0755'
+      tags:
+        - moverepodata
+    - name: Mount /dev/sr0 to temp directory
+      mount:
+        path: /home/ansible/temp
+        src: /dev/sr0
+        fstype: iso9660
+        opts: ro,noauto
+        state: ephemeral  
+      tags:
+        - moverepodata
+    - name: Copy contents of temp directory to permanent location /repo/
+      command: cp -R /home/ansible/temp /home/ansible/repo
+      tags:
+        - moverepodata
+    - name: Create symbolic link between repo location and /var/www/hmtl
+      file:
+        src: /home/ansible/repo/temp
+        dest: /var/www/html/repo
+        state: link
+      tags:
+        - finishreposetup
+    - name: Address selinux context type of repo location
+      sefcontext:
+        target: '/home/ansible/repo(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+      tags:
+        - finishreposetup
+    - name: Restorecon on /repo/
+      command: restorecon -Rv /home/ansible/repo
+      changed_when: true
+      tags:
+        - finishreposetup
+    - name: Start and enable httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+      tags:
+        - finishreposetup
+    - name: Open firewall for http
+      firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+      tags:
+        - finishreposetup
+    - name: Allow traversal of home directory
+      file:
+        path: /home/ansible
+        mode: '0711'
+      tags:
+        - finishreposetup
+    - name: Test local repo connection with uri
+      uri:
+        url: http://control.example.local/repo
+      tags:
+        - finishreposetup
+

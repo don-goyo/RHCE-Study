@@ -1,0 +1,9 @@
+---
+- name: Create report on managed hosts
+  hosts: all
+  tasks:
+    - name: Send report to managed hosts
+      template:
+        src: report.j2
+        dest: /tmp/{{ ansible_hostname }}-report.txt
+

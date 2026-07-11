@@ -1,0 +1,5 @@
+---
+- name: Call motd role
+  hosts: all
+  roles:
+    - role: motdrole

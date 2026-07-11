@@ -1,0 +1,9 @@
+---
+- name: Copy motd.j2 template to /etc/motd on managed hosts
+  template:
+    src: templates/motd.j2
+    dest: /etc/motd
+    owner: root
+    group: root
+    mode: '0444'
+# tasks file for motdrole

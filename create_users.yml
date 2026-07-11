@@ -1,0 +1,33 @@
+---
+- name: Create users on ansible1 for profs group
+  hosts: ansible1
+  vars_files: 
+    - vault/task7file.yml
+  tasks:
+    - name: Create {{ groups }}
+      group:
+        name: "{{ item.groupname }}"
+      loop: "{{ usergroups }}"
+    - name: Append {{ groups }} and create {{ username }}
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.groups }}"
+        append: true
+        password: "{{ vault_password | password_hash('sha512') }}"
+      loop: "{{ users }}"
+- name: Create users on ansible2 for student group
+  hosts: ansible2
+  vars_files: 
+    - vault/task7file.yml
+  tasks:
+    - name: Create {{ groups }}
+      group:
+        name: "{{ item.groupname }}"
+      loop: "{{ usergroups }}"
+    - name: Append {{ groups }} and create {{ username }}
+      user:
+        name: "{{ item.username }}"
+        groups: "{{ item.groups }}"
+        append: true
+        password: "{{ vault_password | password_hash('sha512') }}"
+      loop: "{{ users }}"

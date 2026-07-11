@@ -1,0 +1,44 @@
+---
+- name: Create the ansible user on managed nodes, ensure sudo access and create and pass ssh keys
+  hosts: localhost
+  vars:
+    username: ansible
+  tasks:
+    - name: Generate ssh key
+      user:
+        name: "{{ username }}"
+        generate_ssh_key: yes
+        ssh_key_file: .ssh/id_rsa
+        ssh_key_comment: "{{ username }}@{{ ansible_fqdn }}"
+    - name: Create temp directory for ssh key
+      file:
+        path: "{{ username }}"
+        state: directory
+        mode: '0755'
+    - name: Copy ssh key
+      shell: 'cat /home/{{ username }}/.ssh/id_rsa.pub > {{ username }}/id_rsa.pub'
+    - name: Verify ssh key is present
+      command: ls -l {{ username }}/
+  tags: setuplocal
+
+- name: Create ansible user with password, ensure sudo access and copy ssh key to managed nodes
+  hosts: all  
+  remote_user: root
+  vars_files: vault/vault.yml
+  vars:
+    username: ansible
+  tasks:
+    - name: Create user
+      user:
+        name: "{{ username }}"
+        password: "{{ vault_password | password_hash('sha512', 'myrandomsalt') }}"
+    - name: Copy sudoers file to sudoers.d/ansible
+      copy:
+       content: '%ansible ALL=(ALL:ALL) NOPASSWD:ALL'
+       dest: /etc/sudoers.d/ansible
+    - name: Copy ssh key to managed nodes
+      authorized_key:
+        user: "{{ username }}"
+        key: "{{ lookup('file', './'+ username +'/id_rsa.pub') }}"
+  tags: setupremote
+

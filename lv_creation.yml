@@ -1,0 +1,47 @@
+---
+- name: Create logical volume on second disk
+  hosts: all
+  tasks:
+    - name: Test for second disk
+      stat:
+        path: /dev/nvme0n2
+      register: second_disk
+    - name: Print message for disk not found
+      debug:
+        msg: "no second disk available for this host"
+      when: not second_disk.stat.exists
+    
+    - name: LVM tasks on second disk
+      block:
+        - name: Print message for second disk found
+          debug:
+            msg: "second disk found, proceeding with vg and lv tasks"
+          when: second_disk.stat.exists
+        - name: Create volume group vgdata
+          lvg:
+            vg: vgdata
+            pvs: /dev/nvme0n2
+            state: active
+        - name: Create log volume of 30GB
+          lvol:
+            vg: vgdata
+            lv: lvdata
+            size: 30g
+            resizefs: true
+      rescue:
+        - name: Insufficient space
+          debug:
+            msg: "insufficient disk space for 30g volume, creating 1g volume"
+        - name: Create log volume of 1g
+          lvol:
+            vg: vgdata
+            lv: lvdata
+            size: 1g
+            resizefs: true
+      always:
+        - name: Create xfs file system on log volume
+          filesystem:
+            fstype: xfs
+            dev: /dev/vgdata/lvdata
+          when: second_disk.stat.exists
+

@@ -1,0 +1,8 @@
+---
+- name: Generate automated /etc/hosts file for managed hosts
+  hosts: all
+  tasks:
+    - name: Generate /etc/hosts file using j2 template
+      template:
+        src: etc_hosts.j2
+        dest: /etc/hosts

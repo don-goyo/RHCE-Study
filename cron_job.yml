@@ -1,0 +1,14 @@
+---
+- name: Cron job on ansible1
+  hosts: ansible1
+  tasks:
+    - name: Creates a cron file under /etc/cron.d
+      ansible.builtin.cron:
+        name: update julio file
+        minute: "*/2"
+        hour: "*"
+        user: julio
+        job: "/usr/bin/touch /tmp/juliofile"
+        cron_file: ansible_julio-file
+      become: true
+
