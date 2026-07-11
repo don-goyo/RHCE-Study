@@ -1,0 +1,46 @@
+---
+- name: Connect managed nodes to control node repo and download nmap package
+  hosts: all
+  tasks:
+    - name: Open firewall for http service
+      ansible.posix.firewalld:
+        service: http
+        state: enabled
+        permanent: true
+        immediate: true
+
+    - name: Add local repo hosted on control node
+      ansible.builtin.yum_repository:
+        name: BaseOS
+        description: BaseOS repo
+        baseurl: http://control.example.local/index/repo/BaseOS
+        gpgcheck: no
+        enabled: true
+        priority: 1
+
+    - name: Add local repo hosted on control node
+      ansible.builtin.yum_repository:
+        name: AppStream
+        description: AppStream repo
+        baseurl: http://control.example.local/index/repo/AppStream
+        gpgcheck: no
+        enabled: true
+        priority: 1
+
+    - name: Install nmap package on managed nodes
+      dnf:
+        name: nmap
+        state: present
+
+    - name: Get info about packages
+      package_facts:
+        manager: auto
+
+    - name: List installed packages
+      debug:
+        var: ansible_facts.packages
+
+    - name: Show nmap version
+      debug:
+        msg: "Version {{ ansible_facts.packages['nmap'][0].version }}"
+      when: "'nmap' in ansible_facts.packages"

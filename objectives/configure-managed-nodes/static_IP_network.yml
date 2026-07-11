@@ -1,0 +1,17 @@
+---
+- name: Static IP second network interface
+  hosts: ansible2
+  vars:
+    network_provider: nm
+    network_connections:
+      - name: ens256
+        type: ethernet
+        interface_name: ens256
+        autoconnect: true
+        ip:
+          address: 
+            - fc00::202/64
+        state: up
+
+  roles:    
+    - rhel-system-roles.network

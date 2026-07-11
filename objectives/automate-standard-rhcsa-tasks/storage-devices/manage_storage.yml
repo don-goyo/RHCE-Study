@@ -1,0 +1,51 @@
+---
+- name: Setup storage on second disk
+  hosts: all
+  become: true
+  vars:
+    target_disk: nvme0n2
+
+  tasks:
+    - name: Check for the existence of a second disk
+      assert:
+        that:
+          - "'{{ target_disk }}' in ansible_devices"
+        fail_msg: "second disk does not exist"
+        success_msg: "second disk nvme0n2 exists, playbook will continue"
+
+    - name: Configure disk with one partition with all available space
+      parted:
+        device: "/dev/{{ target_disk }}"
+        number: 1
+        state: present
+        part_end: 100%
+  
+    - name: Create an LVM volume group with the name vgfiles
+      lvg:
+        vg: vgfiles
+        pvs: "/dev/{{ target_disk }}p1"
+        state: present
+
+    - name: Refresh LVM facts to see newly created VG
+      setup:
+        filter: ansible_lvm
+
+    - name: If vol group greater than 5g, create lvfiles size 5g, else create lvfiles size 3g
+      lvol:
+        vg: vgfiles
+        lv: lvfiles
+        size: "{{ '5G' if ( ansible_lvm.vgs['vgfiles'].size_g | float > 5) else '3G' }}"
+
+    - name: Format lvfiles with the XFS filesystem
+      filesystem:
+        dev: /dev/vgfiles/lvfiles
+        fstype: xfs
+        state: present
+
+    - name: Mount lvfiles on /files directory
+      mount:
+        path: /files
+        src: /dev/vgfiles/lvfiles
+        fstype: xfs
+        state: mounted
+

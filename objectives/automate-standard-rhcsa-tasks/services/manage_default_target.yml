@@ -1,0 +1,28 @@
+---
+- name: Set the default target and reboot if needed
+  hosts: all
+  vars:
+    default_target: multi-user.target
+  tasks:
+    - name: Get current target
+      command:
+        cmd: systemctl get-default
+      changed_when: false
+      register: default
+
+    - name: Set default target
+      command: 
+        cmd: systemctl set-default {{ default_target }}
+      when: default.stdout !=  default_target
+      register: target_change
+
+    - name: Reboot if target was changed 
+      reboot:
+        msg: "Rebooting to apply new default target"
+      when: target_change is changed
+
+    - name: Success message
+      debug:
+        msg: "Managed node has successfully rebooted"
+      when: target_change is changed
+

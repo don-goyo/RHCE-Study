@@ -1,0 +1,24 @@
+---
+- name: create users interactively
+  hosts: all
+  vars_prompt:
+    - name: "username"
+      prompt: "Enter username"
+      private: false
+
+    - name: "password"
+      prompt: "Enter password"
+      private: true
+      confirm: true
+      encrypt: "sha512_crypt"
+
+  tasks:
+    - name: Interactively create users and set password
+      user:
+        name: "{{ username }}"
+        password: "{{ password }}"
+        update_password: on_create
+        
+    - name: Force password change on next login
+      shell: "chage -d 0 {{ username }}"
+     

@@ -1,0 +1,24 @@
+---
+- name: Configure managed host to use control node repo, install nginx and print package information
+  hosts: all
+  tasks:
+    - name: Setup access to control node repository
+      yum_repository:
+        name: control_node
+        description: control node repo for nginx
+        file: control_node
+        baseurl: http://control.example.local/repo/
+        gpgcheck: no
+        enabled: yes
+    - name: Clean dnf cache
+      command: dnf clean all
+    - name: Install nginx package
+      dnf:
+        name: nginx
+        state: present
+    - name: Gather nginx info
+      package_facts:
+        manager: auto
+    - name: Print nginx package info
+      debug:
+        var: ansible_facts.packages['nginx']

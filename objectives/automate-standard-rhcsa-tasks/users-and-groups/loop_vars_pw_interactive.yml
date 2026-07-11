@@ -1,0 +1,24 @@
+---
+- name: Create users with vars files and set password interactively
+  hosts: all
+  vars_files:
+    - vars/users.yml
+  vars_prompt:
+    - name: "password"
+      prompt: "Enter password"
+      private: true
+      confirm: true
+      encrypt: "sha512_crypt"
+
+  tasks:
+    - name: Interactively create users and set password
+      user:
+        name: "{{ item }}"
+        password: "{{ password }}"
+        update_password: on_create
+      loop: "{{ usernames }}"
+
+    - name: Force password change on next login
+      shell: "chage -d 0 {{ item }}"
+      loop: "{{ usernames }}"
+

@@ -1,0 +1,60 @@
+---
+- name: Setup nginx repo on control node
+  hosts: localhost
+  tasks:
+    - name: Make /repo directory
+      file:
+        path: /home/ansible/repo
+        state: directory
+        mode: '0755'
+        owner: root
+        group: apache
+    - name: Ensure parent directories are accessible for others
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - /home
+        - /home/ansible
+    - name: Download nginx packages to /repo directory
+      dnf:
+        name: nginx*
+        download_only: yes
+        download_dir: /home/ansible/repo
+        state: present
+    - name: Create repo index and metadata
+      command: createrepo /home/ansible/repo
+    - name: Change document root in /etc/httpd to /repo so httpd hosts /repo
+      lineinfile:
+        path: /etc/httpd/conf/httpd.conf
+        regexp: '^DocumentRoot "/var/www/html" '
+        line: DocumentRoot "/home/ansible/repo"
+    - name: Change selinux context type of /home/ansible/repo
+      sefcontext:
+        target: '/home/ansible/repo(/.*)?'
+        setype: httpd_sys_content_t
+        state: present
+    - name: Restorecon for selinux
+      command: restorecon -Rv /home/ansible/repo
+    - name: Create directory listing data in absence of index.html
+      copy:
+        content: |
+          Alias /repo "/home/ansible/repo"
+
+          <Directory "/home/ansible/repo">
+              Options +Indexes
+              AllowOverride None
+              Require all granted
+          </Directory>
+        dest: /etc/httpd/conf.d/repo.conf
+    - name: Restart httpd
+      service:
+        name: httpd
+        state: restarted
+    - name: Test /repo function
+      uri:
+        url: http://localhost/repo/
+        method: GET
+        status_code: 200
+        return_content: yes
