@@ -1,10 +1,11 @@
 # Project Name: RHCE Study
 
 ## 📌 Overview
-Practicing RHCE exam objectives with ansible
+Preparing for RHCE exam objectives with Ansible; used Red Hat training and Sander van Vugt as primary learning resources.
 
 ## 🛠 Prerequisites
-* **Ansible Core:** 2.16.16
+* **Ansible Core:** 2.16.19
+* **Ansible-navigator** 26.6.0
 * **Python:** 3.9.25
 * **Collections:** `community.general 12.5.0`, `ansible.posix 2.1.0`, 'redhat.rhel_system_roles 1.108.6'
 * **Target OS:** RHEL 9.7
