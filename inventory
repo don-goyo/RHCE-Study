@@ -1,2 +1,9 @@
-ansible1
-ansible2
+[dev]
+ansible1.example.local
+[prod]
+ansible2.example.local
+ansible3.example.local
+[test]
+ansible4.example.local
+[webservers:children]
+prod
