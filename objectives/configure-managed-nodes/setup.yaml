@@ -1,0 +1,75 @@
+---
+- name: Setup ansible user, ssh keys, etc/hosts
+  hosts: all
+  vars_files: locker.yml
+  tasks:
+    - name: Create curtis user with password
+      user:
+        name: curtis
+        password: "{{ locker_password | password_hash('sha512') }}"
+        groups: wheel
+        append: true
+          #  - name: Generate SSH keypair on control node
+          #    openssh_keypair:
+          #      path: ~/.ssh/id_rsa_curtis
+          #      type: rsa
+          #      size: 4096
+          #    delegate_to: localhost
+          #    run_once: true
+    - name: Create .ssh directory for keys
+      file:
+        path: /home/curtis/.ssh
+        state: directory
+        mode: '0700'
+        group: curtis
+        owner: curtis
+    - name: Generate ansible user keys
+      user:
+        name: curtis
+        generate_ssh_key: yes
+        ssh_key_bits: 2048
+        ssh_key_file: .ssh/id_rsa
+        ssh_key_comment: "curtis@{{ ansible_hostname }}"
+          #  force: true
+      delegate_to: localhost
+    - name: Copy keys to remote hosts with authorized key
+      authorized_key:
+        user: curtis
+        state: present
+        key: "{{ lookup('file', '/home/curtis/.ssh/id_rsa.pub') }}"
+    - name: Copy sudoers file for curtis user
+      copy:
+        content: 'curtis ALL=(ALL) NOPASSWD: ALL'
+        dest: /etc/sudoers.d/curtis
+        validate: /usr/sbin/visudo -csf %s
+    - name: Deploy /etc/hosts j2 template
+      template:
+        src: etc_hosts.j2
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: '0644'
+    - name: lineinefile control node info to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: 192.168.33.156 control.example.local control
+        owner: root
+        group: root
+        mode: '0644'
+
+- name: Register remote hosts
+  hosts: all
+  vars_files: locker.yml
+  tasks:
+    - name: Register remote hosts
+      redhat_subscription:
+        state: present
+        username: "{{ rh_username }}"
+        password: "{{ rh_password }}"
+        auto_attach: true
+    - name: Update repo
+      command: dnf search vim
+      register: search_output
+    - name: Print search_output
+      debug:
+        var: search_output

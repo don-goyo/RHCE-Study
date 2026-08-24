@@ -1,0 +1,14 @@
+---
+ansible-navigator:
+  execution-environment:
+    enabled: true 
+    image: registry.redhat.io/ansible-automation-platform-26/ee-supported-rhel9:latest
+    pull:
+      policy: missing
+    volume-mounts:
+      - src: "/usr/share/ansible/roles/"
+        dest: "/usr/share/ansible/roles/"
+      - src: "/usr/share/ansible/collections/"
+        dest: "/usr/share/ansible/collections/"
+  playbook-artifact:
+    enable: false
