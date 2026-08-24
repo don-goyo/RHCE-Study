@@ -33,6 +33,7 @@ Documentation on my preparation for RHCE exam objectives with Ansible; used Red 
 7. podman pull registry.redhat.io/ansible-automation-platform-26/ee-supported-rhel9:latest
 8. Setup baseline inventory, ansible.cfg and ansible-navigator.yml files
 9. Install collections with ansible-galaxy collection install -r requirements.yml -p <your/custom/subdirectory>; I recommend practicing installing collections into custom subdirectory within your project directory so ansible-navigator can access the collections; if not, you will have to mount the default collections system locations in ansible-navigator.yml to access the collections
-10. Check baseline config and inventory with ansible-navigator inventory and ansible-inventory --graph.
-11. Check that collections installed correctly with ansible-galaxy collection list and note the locations
+10. sudo dnf install rhel-system-roles
+11. Check baseline config and inventory with ansible-navigator inventory and ansible-inventory --graph.
+12. Check that collections installed correctly with ansible-galaxy collection list and note the locations
 
