@@ -36,4 +36,6 @@ Documentation on my preparation for RHCE exam objectives with Ansible; used Red 
 10. sudo dnf install rhel-system-roles
 11. Check baseline config and inventory with ansible-navigator inventory and ansible-inventory --graph.
 12. Check that collections installed correctly with ansible-galaxy collection list and note the locations
+13. Use the objectives/configure-managed-nodes/setup.yaml to configure managed hosts with ssh keys, sudoer access, setup /etc/hosts and register managed hosts with Red Hat. The playbook is dependent on ansible-vault file referenced in vars_files header. Take care with relative versus absolute paths if using ansible-navigator to execute the playbook. Ansible-navigator execution-environment runs as root so relative path will be totally different. This error cost me lots of time when setting up the lab environment with navigator for the first time.
+14. Enjoy!
 
