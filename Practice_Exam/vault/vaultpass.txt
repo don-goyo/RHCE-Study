@@ -1,1 +1,3 @@
-mypassword
+# vaultpass.txt.example
+# Put your local Ansible Vault password here.
+
