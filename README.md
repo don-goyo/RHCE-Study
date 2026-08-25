@@ -1,4 +1,4 @@
-# Project Name: RHCE Study
+# Project Name: RHCE Prep Lab
 
 ## 📌 Overview
 Documentation on my preparation for RHCE exam objectives with Ansible; used Red Hat training and Sander van Vugt as primary learning resources.
