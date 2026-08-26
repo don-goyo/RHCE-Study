@@ -8,4 +8,7 @@ collections:
 
   - name: community.crypto
     version: 3.3.0
+
+##Installed rhel-sytem-roles via RPM because I used free developer license to access everything
+
     
