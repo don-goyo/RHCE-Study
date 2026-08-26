@@ -29,9 +29,9 @@
             size: 30g
             resizefs: true
       rescue:
-        - name: Insufficient space
+        - name: Lvol failure, conduct lvol fallback
           debug:
-            msg: "insufficient disk space for 30g volume, creating 1g volume"
+            msg: "lvol task failed; conducting rescue task"
         - name: Create log volume of 1g
           lvol:
             vg: vgdata
