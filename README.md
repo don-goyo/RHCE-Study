@@ -1,9 +1,9 @@
 # Project Name: RHCE Prep Lab
 
 ## 📌 Overview
-Documentation on my preparation for RHCE exam objectives with Ansible; used Red Hat training and Sander van Vugt as primary learning resources.
+This repository contains my Ansible and RHCE study exercises, lab configuration, and personal practice work while preparing for the Red Hat Certified Engineer (RHCE) exam. The Practice_Exam directory contains my personal implementations of practice exercises and tasks. The original questions and instructional material are not reproduced here.
 
-## 🛠 Prerequisites
+## Lab Environment
 ## Control Node
 * **Ansible Core:** 2.16.19
 * **Ansible-navigator** 26.6.0
@@ -15,6 +15,7 @@ Documentation on my preparation for RHCE exam objectives with Ansible; used Red 
 ## Managed Hosts
 * **OS:** RHEL 9.7
 ## Execution Environment
+## pinned to an image digest for reproducibility
 * **Red Hat Ansible Automation Platform:** 2.6
 * **Execution Environment:** `ee-supported-rhel9`
 * **Execution Environment version:** 2.0.0
@@ -35,7 +36,7 @@ Documentation on my preparation for RHCE exam objectives with Ansible; used Red 
 * '/create-plays-playbooks' Practice with Jinja templates, loops and conditionals
 * '/configure-managed-nodes' Setup and static IP address for new managed hosts
 * '/automate-standard-rhcsa-tasks' Playbooks that manage default target, setup repository, setup storage and manage users and groups
-* '/Practice_Exam' Complete Practice Exam example of covering the majority of the test objectives
+* '/Practice_Exam' My solutions to third-party exercises covering the majority of the test objectives
 
 ## 🚀 Dependencies & Usage
 1. Register control node with subscription-manager register
