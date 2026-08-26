@@ -1,6 +1,6 @@
 # Project Name: RHCE Prep Lab
 
-## 📌 Overview
+## Overview
 This repository contains my Ansible and RHCE study exercises, lab configuration, and personal practice work while preparing for the Red Hat Certified Engineer (RHCE) exam. The Practice_Exam directory contains my personal implementations of practice exercises and tasks. The original questions and instructional material are not reproduced here.
 
 ## Lab Environment
@@ -27,6 +27,8 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 * **Architecture:** ARM64
 * **Image digest:**
   `sha256:63ccd8ad711852fb955c10b1ee57fd3895e50220ce5f1877e58130a7ff8128a6`
+
+## Lab Architecture
 
 ## 📂 Project Structure
 * 'inventory' example static inventory for lab
