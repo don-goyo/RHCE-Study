@@ -4,14 +4,28 @@
 Documentation on my preparation for RHCE exam objectives with Ansible; used Red Hat training and Sander van Vugt as primary learning resources.
 
 ## 🛠 Prerequisites
+## Control Node
 * **Ansible Core:** 2.16.19
 * **Ansible-navigator** 26.6.0
 * **Ansible-Automation-Platform** 2.6
-* **Podman-image** registry.redhat.io/ansible-automation-platform-26/ee-supported-rhel9
 * **Python:** 3.9.23
 * **Collections:** `community.general 13.3.0`, `ansible.posix 2.2.2`, 'community.crypto 3.3.0', 'redhat.rhel_system_roles 1.120.6'
-* **Target OS:** RHEL 9.7
+* **OS:** RHEL 9.7
 * **Lab Environment:** VMware Fusion 13.6.1
+## Managed Hosts
+* **OS:** RHEL 9.7
+## Execution Environment
+* **Red Hat Ansible Automation Platform:** 2.6
+* **Execution Environment:** `ee-supported-rhel9`
+* **Execution Environment version:** 2.0.0
+* **RHEL:** 9.8
+* **Ansible Core:** 2.16.19
+* **ansible-navigator:** 26.6.0
+* **Python:** 3.12.13
+* **Jinja:** 3.1.6
+* **Architecture:** ARM64
+* **Image digest:**
+  `sha256:63ccd8ad711852fb955c10b1ee57fd3895e50220ce5f1877e58130a7ff8128a6`
 
 ## 📂 Project Structure
 * 'inventory' example static inventory for lab
