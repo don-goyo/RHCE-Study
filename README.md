@@ -29,7 +29,8 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
   `sha256:63ccd8ad711852fb955c10b1ee57fd3895e50220ce5f1877e58130a7ff8128a6`
 
 ## Lab Architecture
-    ![RHCE lab](docs/RHCE_lab.drawio.png)
+    
+  ![RHCE lab](docs/RHCE_lab.drawio.png)
 
 ## 📂 Project Structure
 * 'inventory' example static inventory for lab
