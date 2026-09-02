@@ -37,9 +37,9 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 * 'ansible.cfg' example baseline ansible.cfg
 * 'ansible-navigator.yml' example navigator config
 * 'requirements.yml' Required collections for using example playbooks
-* '/create-plays-playbooks' Practice with Jinja templates, loops and conditionals
-* '/configure-managed-nodes' Setup and static IP address for new managed hosts
-* '/automate-standard-rhcsa-tasks' Playbooks that manage default target, setup repository, setup storage and manage users and groups
+* '/objectives/create-plays-playbooks' Practice with Jinja templates, loops and conditionals
+* '/objectives/configure-managed-nodes' Setup and static IP address for new managed hosts
+* '/objectives/automate-standard-rhcsa-tasks' Playbooks that manage default target, setup repository, setup storage and manage users and groups
 * '/Practice_Exam' My solutions to third-party exercises covering the majority of the test objectives
 
 ## 🚀 Dependencies & Usage
