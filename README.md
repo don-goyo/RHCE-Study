@@ -5,6 +5,24 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 
 **Outcome:** This lab was used as my primary hands-on study environment for the Red Hat Certified Engineer (RHCE) exam, which I subsequently passed.
 
+## Skills Demonstrated
+
+This repository demonstrates hands-on experience with:
+
+- Ansible inventories, configuration, variables, facts, loops, and conditionals
+- Playbook development and troubleshooting
+- Jinja2 templates
+- Ansible roles
+- Ansible Vault
+- Ansible Collections
+- `ansible-navigator` and execution environments
+- SSH and privilege escalation
+- RHEL user and group administration
+- Software repositories and package management
+- Storage and LVM
+- Services and system configuration
+- Git-based workflow
+
 ## Lab Environment
 ## Control Node
 | **Component** | **Version** |
