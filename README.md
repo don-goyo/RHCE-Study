@@ -19,7 +19,6 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 | --- | --- |
 | **OS:** | RHEL 9.7 |
 ## Execution Environment
-* pinned to an image digest for reproducibility
 | **Component** | **Version** |
 | --- | --- |
 | **Red Hat Ansible Automation Platform:** | 2.6 |
