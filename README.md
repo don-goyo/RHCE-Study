@@ -3,6 +3,7 @@
 ## Overview
 This repository contains my Ansible and RHCE study exercises, lab configuration, and personal practice work while preparing for the Red Hat Certified Engineer (RHCE) exam. The Practice_Exam directory contains my personal implementations of practice exercises and tasks. The original questions and instructional material are not reproduced here.
 **Outcome:** This lab was used as my primary hands-on study environment for the Red Hat Certified Engineer (RHCE) exam, which I subsequently passed.
+
 ## Lab Environment
 ## Control Node
 | **Component** | **Version** |
