@@ -19,18 +19,20 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 | --- | --- |
 | **OS:** | RHEL 9.7 |
 ## Execution Environment
-## pinned to an image digest for reproducibility
-* **Red Hat Ansible Automation Platform:** 2.6
-* **Execution Environment:** `ee-supported-rhel9`
-* **Execution Environment version:** 2.0.0
-* **RHEL:** 9.8
-* **Ansible Core:** 2.16.19
-* **ansible-navigator:** 26.6.0
-* **Python:** 3.12.13
-* **Jinja:** 3.1.6
-* **Architecture:** ARM64
-* **Image digest:**
-  `sha256:63ccd8ad711852fb955c10b1ee57fd3895e50220ce5f1877e58130a7ff8128a6`
+* pinned to an image digest for reproducibility
+| **Component** | **Version** |
+| --- | --- |
+| **Red Hat Ansible Automation Platform:** | 2.6 |
+| **Execution Environment:** | `ee-supported-rhel9` |
+| **Execution Environment version:** | 2.0.0 |
+| **RHEL:** | 9.8 |
+| **Ansible Core:** | 2.16.19 |
+| **ansible-navigator:** | 26.6.0 |
+| **Python:** | 3.12.13 |
+| **Jinja:** | 3.1.6 |
+| **Architecture:** | ARM64 |
+| **Image digest:** |
+  `sha256:63ccd8ad711852fb955c10b1ee57fd3895e50220ce5f1877e58130a7ff8128a6` |
 
 ## Lab Architecture
     
