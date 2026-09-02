@@ -5,6 +5,8 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 
 ## Lab Environment
 ## Control Node
+| **Component** | **Version** |
+| --- | --- |
 * **Ansible Core:** 2.16.19
 * **Ansible-navigator** 26.6.0
 * **Ansible-Automation-Platform** 2.6
