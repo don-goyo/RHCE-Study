@@ -37,7 +37,7 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
     
   ![RHCE lab](docs/RHCE_lab.drawio.png)
 
-## 📂 Project Structure
+## Project Structure
 * 'inventory' example static inventory for lab
 * 'ansible.cfg' example baseline ansible.cfg
 * 'ansible-navigator.yml' example navigator config
@@ -47,7 +47,32 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 * '/objectives/automate-standard-rhcsa-tasks' Playbooks that manage default target, setup repository, setup storage and manage users and groups
 * '/Practice_Exam' My solutions to third-party exercises covering the majority of the test objectives
 
-## 🚀 Dependencies & Usage
+## Practice_Exam
+The `Practice_Exam/` directory contains my implementations of
+RHCE-style automation exercises.
+
+The exercises cover areas including:
+- User and group management
+- SSH configuration
+- Cron
+- LVM/storage
+- Repository configuration
+- `/etc/hosts`
+- Jinja2 templates
+- Roles
+- Ansible Vault
+- Reporting
+- Inventory management
+| **Exercise** | **Ansible concept** | **Objective** |
+| --- | --- | --- |
+| create_users.yml | ansible.builtin.user | user management |
+| cron_job.yml | ansible.builtin.cron | scheduled tasks |
+| lv_creation.yml | LVM modules | storage devices |
+| call_motd_role.yml | roles | role usage |
+| generate_report.yml | templates | Jinja2 |
+| etc_hosts.yml | templates | configuration management |
+
+## Getting Started
 1. Register control node with subscription-manager register
 2. Run sudo dnf update to update RPM repositories
 3. subscription-manager repos --enable ansible-automation-platform-2.6-for-rhel-9-aarch64-rpms
@@ -60,7 +85,27 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 10. sudo dnf install rhel-system-roles
 11. Check baseline config and inventory with ansible-navigator inventory and ansible-inventory --graph.
 12. Check that collections installed correctly with ansible-galaxy collection list and note the locations
-13. Use the objectives/configure-managed-nodes/setup.yaml to configure managed hosts with ssh keys, sudoer access, setup /etc/hosts and register managed hosts with Red Hat. The playbook is dependent on ansible-vault file referenced in vars_files header. Take care with relative versus absolute paths if using ansible-navigator to execute the playbook. Ansible-navigator execution-environment runs as root so relative path will be totally different. This error cost me lots of time when setting up the lab environment with navigator for the first time. Run the playbook as root, prompting for ssh password and sudo password. For example, ansible-navigator -m stdout setup.yaml -k --ask-pass (ensure remote_user in ansible.cfg is set to root or add remote_user: root to the play header).
+13. Use the objectives/configure-managed-nodes/setup.yaml to configure managed hosts with ssh keys, sudoer access, setup /etc/hosts and register managed hosts with Red Hat. The playbook is dependent on ansible-vault file referenced in vars_files header. Take care with relative versus absolute paths if using ansible-navigator to execute the playbook. Ansible-navigator execution-environment runs as root so relative path will be totally different. Run the playbook as root, prompting for ssh password and sudo password. For example, ansible-navigator -m stdout setup.yaml -k --ask-pass (ensure remote_user in ansible.cfg is set to root or add remote_user: root to the play header).
 14. Conduct ansible all -m ping or ansible-navigator -m stdout exec -- ansible all -m ping to test ansible connectivity with managed hosts.
-15. Enjoy!
+
+## Lessons Learned
+
+**Ansible Navigator and Relative Paths**
+
+When executing playbooks through an execution environment,
+relative paths are evaluated inside the execution environment.
+This caused problems when referencing the ssh pub key location.
+
+The final solution was to account for the execution environment's
+filesystem context and explicitly control the working paths.
+
+**Execution Environment Reproducibility**
+
+The lab uses a digest-pinned execution environment to avoid
+unexpected changes caused by moving image tags.
+
+**Collections**
+
+Collections are installed into a project-local directory so
+that they are accessible from the execution environment. I made this mistake initially and had to mount the system location for both collections and roles.
 
