@@ -7,9 +7,9 @@ This repository contains my Ansible and RHCE study exercises, lab configuration,
 ## Control Node
 | **Component** | **Version** |
 | --- | --- |
-* **Ansible Core:** 2.16.19
-* **Ansible-navigator** 26.6.0
-* **Ansible-Automation-Platform** 2.6
+| **Ansible Core:** | 2.16.19 |
+| **Ansible-navigator:** | 26.6.0 |
+| **Ansible-Automation-Platform:** | 2.6 |
 * **Python:** 3.9.23
 * **Collections:** `community.general 13.3.0`, `ansible.posix 2.2.2`, 'community.crypto 3.3.0', 'redhat.rhel_system_roles 1.120.6'
 * **OS:** RHEL 9.7
