@@ -63,6 +63,7 @@ The exercises cover areas including:
 - Ansible Vault
 - Reporting
 - Inventory management
+
 | **Exercise** | **Ansible concept** | **Objective** |
 | --- | --- | --- |
 | create_users.yml | ansible.builtin.user | user management |
